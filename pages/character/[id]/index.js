@@ -1,10 +1,11 @@
 import Head from "next/head";
+import Link from "next/link";
 
 const defaultEndpoint = `https://rickandmortyapi.com/api/character/`;
 
 export async function getServerSideProps({ query }) {
   const { id } = query;
-  const res = await fetch(`{defaultEndpoint}${id}`);
+  const res = await fetch(`${defaultEndpoint}${id}`);
   const data = await res.json();
   return {
     props: {
@@ -13,27 +14,53 @@ export async function getServerSideProps({ query }) {
   };
 }
 
-export default function character({ data }) {
-  console.log("data", data);
+export default function Character({ data }) {
+  const { name, image, gender, location, origin, species, status } = data;
   return (
     <div className="container">
       <Head>
-        <title> Wubba Lunna Dub dub !!!!! </title>
+        <title>{name}</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className="title">Wubba Lunna Dub dub🙄🙄🙄🙄 !!!!!</h1>
-      </main>
+        <h1 className="title">{name}</h1>
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by <img src="/vercel.svg" alt="Vercel" className="logo" />
-        </a>
-      </footer>
+        <div className="profile">
+          <div className="profile-image">
+            <img src={image} alt={name} />
+          </div>
+          <div className="profile-details">
+            <h2>Character Details</h2>
+            <ul>
+              <li>
+                <strong>Name:</strong> {name}
+              </li>
+              <li>
+                <strong>Status:</strong> {status}
+              </li>
+              <li>
+                <strong>Gender:</strong> {gender}
+              </li>
+              <li>
+                <strong>Species:</strong> {species}
+              </li>
+              <li>
+                <strong>Location:</strong> {location?.name}
+              </li>
+              <li>
+                <strong>Originally From:</strong> {origin?.name}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <p className="back">
+          <Link href="/">
+            <a>Back to All Characters</a>
+          </Link>
+        </p>
+      </main>
 
       <style jsx>{`
         .container {
@@ -44,7 +71,6 @@ export default function character({ data }) {
           justify-content: center;
           align-items: center;
         }
-
         main {
           padding: 5rem 0;
           flex: 1;
@@ -53,7 +79,6 @@ export default function character({ data }) {
           justify-content: center;
           align-items: center;
         }
-
         footer {
           width: 100%;
           height: 100px;
@@ -62,49 +87,40 @@ export default function character({ data }) {
           justify-content: center;
           align-items: center;
         }
-
         footer img {
           margin-left: 0.5rem;
         }
-
         footer a {
           display: flex;
           justify-content: center;
           align-items: center;
         }
-
         a {
           color: inherit;
           text-decoration: none;
         }
-
         .title a {
           color: #0070f3;
           text-decoration: none;
         }
-
         .title a:hover,
         .title a:focus,
         .title a:active {
           text-decoration: underline;
         }
-
         .title {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
         }
-
         .title,
         .description {
           text-align: center;
         }
-
         .description {
           line-height: 1.5;
           font-size: 1.5rem;
         }
-
         code {
           background: #fafafa;
           border-radius: 5px;
@@ -113,7 +129,6 @@ export default function character({ data }) {
           font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
             DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
         }
-
         .grid {
           display: flex;
           align-items: center;
@@ -125,7 +140,6 @@ export default function character({ data }) {
           margin-left: 0;
           padding-left: 0;
         }
-
         .card {
           margin: 1rem;
           flex-basis: 45%;
@@ -137,39 +151,33 @@ export default function character({ data }) {
           border-radius: 10px;
           transition: color 0.15s ease, border-color 0.15s ease;
         }
-
         .card:hover,
         .card:focus,
         .card:active {
           color: #0070f3;
           border-color: #0070f3;
         }
-
         .card h3 {
           margin: 0 0 1rem 0;
           font-size: 1.5rem;
         }
-
         .card p {
           margin: 0;
           font-size: 1.25rem;
           line-height: 1.5;
         }
-
         .logo {
           height: 1em;
         }
-
         @media (max-width: 600px) {
           .grid {
             width: 100%;
             flex-direction: column;
           }
         }
-
         .search input {
           margin-right: 0.5em;
-          color: purple;
+          background-color:yellow;
         }
         @media (max-width: 600px) {
           .search input {
@@ -180,6 +188,28 @@ export default function character({ data }) {
           .search button {
             width: 100%;
           }
+        }
+        .profile {
+          display: flex;
+          margin-top: 2em;
+        }
+        @media (max-width: 600px) {
+          .profile {
+            flex-direction: column;
+          }
+        }
+        .profile-image {
+          margin-right: 2em;
+        }
+        @media (max-width: 600px) {
+          .profile-image {
+            max-width: 100%;
+            margin: 0 auto;
+          }
+        }
+        .back a {
+          color: blue;
+          text-decoration: underline;
         }
       `}</style>
 
@@ -192,7 +222,6 @@ export default function character({ data }) {
             Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
             sans-serif;
         }
-
         * {
           box-sizing: border-box;
         }
