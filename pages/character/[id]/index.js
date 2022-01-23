@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import Head from "next/head";
 
 const defaultEndpoint = `https://rickandmortyapi.com/api/character/`;
 
-export async function getServerSideProps() {
-  const res = await fetch(defaultEndpoint);
+export async function getServerSideProps({ query }) {
+  const { id } = query;
+  const res = await fetch(`{defaultEndpoint}${id}`);
   const data = await res.json();
   return {
     props: {
@@ -13,76 +13,8 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Home({ data }) {
-  const { info, results: defaultResults = [] } = data;
-  const [results, updateResults] = useState(defaultResults);
-  const [page, updatePage] = useState({
-    ...info,
-    current: defaultEndpoint,
-  });
-  const { current } = page;
-  useEffect(() => {
-    // Don't bother making a request if it's the default endpoint as we
-    // received that on the server
-
-    if (current === defaultEndpoint) return;
-
-    // In order to use async/await, we need an async function, and you can't
-    // make the `useEffect` function itself async, so we can create a new
-    // function inside to do just that
-
-    async function request() {
-      const res = await fetch(current);
-      const nextData = await res.json();
-
-      updatePage({
-        current,
-        ...nextData.info,
-      });
-
-      // If we don't have `prev` value, that means that we're on our "first page"
-      // of results, so we want to replace the results and start fresh
-
-      if (!nextData.info?.prev) {
-        updateResults(nextData.results);
-        return;
-      }
-
-      // Otherwise we want to append our results
-
-      updateResults((prev) => {
-        return [...prev, ...nextData.results];
-      });
-    }
-    request();
-  }, [current]);
-  //dependency
-
-  function handleLoadMore(){
-    updatePage(prev=>{
-      return{
-        ...prev,
-        current:page?.next
-        //next page endpoint
-      }
-    });
-  }
-
-  function handleOnSubmitSearch(e) {
-    e.preventDefault();
-
-    const { currentTarget = {} } = e;
-    const fields = Array.from(currentTarget?.elements);
-    const fieldQuery = fields.find(field => field.name === 'query');
-
-    const value = fieldQuery.value || '';
-    const endpoint = `https://rickandmortyapi.com/api/character/?name=${value}`;
-
-    updatePage({
-      current: endpoint
-    });
-  }
-
+export default function character({ data }) {
+  console.log("data", data);
   return (
     <div className="container">
       <Head>
@@ -90,33 +22,7 @@ export default function Home({ data }) {
       </Head>
 
       <main>
-        <h1 className="title">Wubba Lunna Dub dub !!!!!</h1>
-
-        <p className="description">Riki and Morty Wiki</p>
-      
-        <from className="search" onSubmit={handleOnSubmitSearch}>
-          <input name="query" type="search" />
-          <button>Search</button>
-        </from>
-
-
-        <ul className="grid">
-          {results.map((result) => {
-            const { id, name, image } = result;
-
-            return (
-              <li key={id} className="card ">
-                <a href="https://nextjs.org/docs">
-                  <img src={image} alt={`${name}.Thumbnail`} />
-                  <h3>{name}</h3>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        <p>
-          <button onClick={handleLoadMore}>Load More ...</button>
-        </p>
+        <h1 className="title">Wubba Lunna Dub dub🙄🙄🙄🙄 !!!!!</h1>
       </main>
 
       <footer>
@@ -262,13 +168,13 @@ export default function Home({ data }) {
         }
 
         .search input {
-          margin-right: .5em;
-          color:purple;
+          margin-right: 0.5em;
+          color: purple;
         }
         @media (max-width: 600px) {
           .search input {
             margin-right: 0;
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
           }
           .search input,
           .search button {
