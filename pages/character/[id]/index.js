@@ -177,7 +177,7 @@ export default function Character({ data }) {
         }
         .search input {
           margin-right: 0.5em;
-          background-color:yellow;
+          background-color: yellow;
         }
         @media (max-width: 600px) {
           .search input {

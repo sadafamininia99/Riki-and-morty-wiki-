@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import Link from "next/link";
 
 const defaultEndpoint = `https://rickandmortyapi.com/api/character/`;
 
@@ -22,14 +23,7 @@ export default function Home({ data }) {
   });
   const { current } = page;
   useEffect(() => {
-    // Don't bother making a request if it's the default endpoint as we
-    // received that on the server
-
     if (current === defaultEndpoint) return;
-
-    // In order to use async/await, we need an async function, and you can't
-    // make the `useEffect` function itself async, so we can create a new
-    // function inside to do just that
 
     async function request() {
       const res = await fetch(current);
@@ -40,15 +34,10 @@ export default function Home({ data }) {
         ...nextData.info,
       });
 
-      // If we don't have `prev` value, that means that we're on our "first page"
-      // of results, so we want to replace the results and start fresh
-
       if (!nextData.info?.prev) {
         updateResults(nextData.results);
         return;
       }
-
-      // Otherwise we want to append our results
 
       updateResults((prev) => {
         return [...prev, ...nextData.results];
@@ -58,31 +47,31 @@ export default function Home({ data }) {
   }, [current]);
   //dependency
 
-  function handleLoadMore(){
-    updatePage(prev=>{
-      return{
+  function handleLoadMore() {
+    updatePage((prev) => {
+      return {
         ...prev,
-        current:page?.next
+        current: page?.next,
         //next page endpoint
-      }
+      };
     });
   }
-
+  ////////////////// ---------------------///////////////
   function handleOnSubmitSearch(e) {
     e.preventDefault();
 
     const { currentTarget = {} } = e;
     const fields = Array.from(currentTarget?.elements);
-    const fieldQuery = fields.find(field => field.name === 'query');
+    const fieldQuery = fields.find((field) => field.name === "query");
 
-    const value = fieldQuery.value || '';
+    const value = fieldQuery.value || "";
     const endpoint = `https://rickandmortyapi.com/api/character/?name=${value}`;
 
     updatePage({
-      current: endpoint
+      current: endpoint,
     });
   }
-
+  ///////////////////////----------------------//////////////
   return (
     <div className="container">
       <Head>
@@ -93,12 +82,11 @@ export default function Home({ data }) {
         <h1 className="title">Wubba Lunna Dub dub !!!!!</h1>
 
         <p className="description">Riki and Morty Wiki</p>
-      
+
         <from className="search" onSubmit={handleOnSubmitSearch}>
           <input name="query" type="search" />
           <button>Search</button>
         </from>
-
 
         <ul className="grid">
           {results.map((result) => {
@@ -106,10 +94,12 @@ export default function Home({ data }) {
 
             return (
               <li key={id} className="card ">
-                <a href="https://nextjs.org/docs">
-                  <img src={image} alt={`${name}.Thumbnail`} />
-                  <h3>{name}</h3>
-                </a>
+                <Link href="/character/[id]" as={`/character/${id}`}>
+                  <a>
+                    <img src={image} alt={`${name}.Thumbnail`} />
+                    <h3>{name}</h3>
+                  </a>
+                </Link>
               </li>
             );
           })}
@@ -227,7 +217,7 @@ export default function Home({ data }) {
           text-align: left;
           color: inherit;
           text-decoration: none;
-          border: 1px solid #eaeaea;
+          border: 2px solid #eaeaea;
           border-radius: 10px;
           transition: color 0.15s ease, border-color 0.15s ease;
         }
@@ -262,13 +252,14 @@ export default function Home({ data }) {
         }
 
         .search input {
-          margin-right: .5em;
-          color:purple;
+          margin-right: 0.5em;
+          color: black;
+          border-radius: 50px;
         }
         @media (max-width: 600px) {
           .search input {
             margin-right: 0;
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
           }
           .search input,
           .search button {
